@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<main class="container">
+    <div class="card">
+        <div class="card-header">
+            <a href="{% url 'tweets' tweet.user.id %}">{{tweet.user.username}}</a>
+        </div>
+        <div class="card-body">
+          <p class="card-text">{{tweet.content}}</p>
+            <a href="{% url 'star_user' tweet.id %}">
+              <img src="{{star_image.image.url}}" width="30" height="30">
+              {{star_number}}
+            </a>
+            <a href="{% url 'retweet_user' tweet.id %}">
+              <img src="{{retweet_image.image.url}}" width="20" height="20">
+              {{retweet_number}}
+            </a>
+            <img src="{{comment_image.image.url}}" width="18" height="18">
+            {{comment_number}}
+            ---- {{tweet.datetime|date:"Y年n月j日 G:i"}} ----
+        </div>
+    </div>
+    {% if star_existence == False %}
+    <a href="{% url 'star' tweet.id %}" class="btn btn-info">スター</a>
+    {% else %}
+    <a href="{% url 'star' tweet.id %}" class="btn btn-outline-info">スター</a>
+    {% endif %}
+    {% if retweet_existence == False %}
+    <a href="{% url 'retweet' tweet.id %}" class="btn btn-info">リツイート</a>
+    {% else %}
+    <a href="{% url 'retweet' tweet.id %}" class="btn btn-outline-info">リツイート</a>
+    {% endif %}
+    {% if open == 0 %}
+    <a href="{% url 'open_form' tweet.id open %}" class="btn btn-warning">コメント</a>
+    {% elif open == 1 %}
+    <a href="{% url 'open_form' tweet.id open %}" class="btn btn-outline-warning">コメント</a>
+    {% endif %}
+
+    {% if open == 1 %}
+    <form action="{{comment_url}}" method="POST">{% csrf_token %}
+        <div class="mb-3">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="comment"></textarea>
+            <button type="submit" class="btn btn-warning">送信</button>
+        </div>
+    </form>
+    {% endif %}
+
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <h6 class="border-bottom pb-2 mb-0">コメント</h6>
+        {% for comment in comment_list %}
+        <div class="d-flex text-muted pt-3">
+          <a href="{% url 'tweets' comment.user.id %}"><svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="0" height="0" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><img src="{{comment.user.profile_image.url}}" width="38" height="38"></svg></a>
+          <p class="pb-3 mb-0 small lh-sm border-bottom">
+            <a href="{% url 'tweets' comment.user.id %}"><strong class="d-block text-gray-dark">{{comment.user.username}}</strong></a>
+            {{comment.content}}
+          </p>
+        </div>
+        {% endfor %}
+      </div>
+</main>
+{% endblock content %}

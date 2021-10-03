@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<main class="container">
+    <form class="row g-3" action="{{url}}" method="POST">{% csrf_token %}
+      <input type="hidden" name="token" value="tweet">
+      <div class="col-auto">
+        <input type="text" class="form-control" id="inputPassword2" name="keyword">
+      </div>
+      <div class="col-auto">
+        <button type="submit" class="btn btn-outline-info mb-3">検索</button>
+      </div>
+    </form>
+    <div class="my-3 p-3 bg-white rounded shadow-sm">
+        <svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="0" height="0" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><img src="{{user.profile_image.url}}" width="60" height="60"></svg>
+        <p class="h4">{{user.username}}</p>
+        
+          <div class="my-3 p-3 bg-white rounded shadow-sm">
+            <h6 class="border-bottom pb-2 mb-0">通知</h6>
+            {% for notification in notification_list %}
+            {% if notification.star is not None %}
+            <div class="d-flex text-muted pt-3">
+              <a href="{% url 'tweets' notification.star.user.id %}"><svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="0" height="0" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><img src="{{notification.star.user.profile_image.url}}" width="38" height="38"></svg></a>
+              <p class="pb-3 mb-0 small lh-sm border-bottom">
+                <a href="{% url 'detail' notification.star.tweet.id %}"><strong class="d-block text-gray-dark">{{notification.star.user.username}}さんがあなたのツイートにスターをつけました</strong></a>
+              </p>
+            </div>
+            {% elif notification.retweet is not None %}
+            <div class="d-flex text-muted pt-3">
+              <a href="{% url 'tweets' notification.retweet.user.id %}"><svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="0" height="0" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><img src="{{notification.retweet.user.profile_image.url}}" width="38" height="38"></svg></a>
+              <p class="pb-3 mb-0 small lh-sm border-bottom">
+                <a href="{% url 'detail' notification.retweet.tweet.id %}"><strong class="d-block text-gray-dark">{{notification.retweet.user.username}}さんがあなたのツイートをリツイートしました</strong></a>
+              </p>
+            </div>
+            {% elif notification.follow is not None %}
+            <div class="d-flex text-muted pt-3">
+              <a href="{% url 'tweets' notification.follow.follow_user.id %}"><svg class="bd-placeholder-img flex-shrink-0 me-2 rounded" width="0" height="0" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Placeholder: 32x32" preserveAspectRatio="xMidYMid slice" focusable="false"><img src="{{notification.follow.follow_user.profile_image.url}}" width="38" height="38"></svg></a>
+              <p class="pb-3 mb-0 small lh-sm border-bottom">
+                <a href="{% url 'tweets' notification.follow.follow_user.id %}"><strong class="d-block text-gray-dark">{{notification.follow.follow_user.username}}さんにフォローされました</strong></a>
+              </p>
+            </div>
+            {% endif %}
+            {% endfor %}
+          </div>
+    </div>
+</main>
+{% endblock content %}

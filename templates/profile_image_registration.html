@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<main class="container">
+    <p class="lead">プロフィール画像</p>
+    <img src="{{user.profile_image.url}}" class="img-thumbnail" width="240" height="240">
+    <form action="" method="POST" enctype="multipart/form-data">{% csrf_token %}
+        <div class="mb-3">
+            <input class="form-control" type="file" id="formFile" name="profile_image">
+            <button type="submit" class="btn btn-outline-info">アップロード</button>
+        </div>
+    </form>
+    <a href="{% url 'self_introduction_registration' %}" class="btn btn-info">次へ</a>
+</main>
+{% endblock content %}

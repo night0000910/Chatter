@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block content %}
+<main class="container">
+    <p class="lead">自己紹介</p>
+    <form action="" method="POST">{% csrf_token %}
+        <div class="mb-3">
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="4" name="self_introduction"></textarea>
+            <button type="submit" class="btn btn-info">完了</button>
+        </div>
+    </form>
+    <a href="{% url 'profile_image_registration' %}" class="btn btn-secondary">戻る</a>
+</main>
+{% endblock content %}
